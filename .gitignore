@@ -1,0 +1,79 @@
+# ------------------------------
+# Core Java / Maven
+# ------------------------------
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven wrapper logs
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# ------------------------------
+# IDE Configs
+# ------------------------------
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# VSCode
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# JetBrains cache files
+**/.idea/
+**/*.iws
+**/*.ipr
+
+# ------------------------------
+# OS / System Files
+# ------------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------------
+# Logs / Runtime
+# ------------------------------
+*.log
+logs/
+spring.log
+
+# ------------------------------
+# Environment / Secrets
+# ------------------------------
+.env
+.env.local
+application-local.properties
+application-secret.properties
+application.yaml
+application.yml
+application-dev.yml
+application-prod.yml
+
+# ------------------------------
+# Docker / Build Cache
+# ------------------------------
+docker-data/
+compose-data/
+*.pid
+
+# ------------------------------
+# Temporary files / Misc
+# ------------------------------
+*.swp
+*.tmp
+*.bak
+
+# ------------------------------
+# H2 Database files (if used)
+# ------------------------------
+*.mv.db
+*.h2.db
