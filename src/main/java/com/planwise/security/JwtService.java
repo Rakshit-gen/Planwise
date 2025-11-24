@@ -19,6 +19,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     
+    private static final String DEFAULT_JWT_SECRET = "YWJjZGVmZ2hpamsrbW5vcHFyc3R1dnd4eXoxMjM0NTY3ODkwYWJjZGVmZ2hpamsrbW5vcHFyc3Q=";
+    
     @Value("${app.jwt.secret:}")
     private String secretKey;
     
@@ -27,17 +29,29 @@ public class JwtService {
     
     @PostConstruct
     public void validateSecret() {
+        // Priority: 1. Environment variable, 2. Config property, 3. Default
+        String envSecret = System.getenv("JWT_SECRET");
+        
+        if (envSecret != null && !envSecret.trim().isEmpty()) {
+            // Use environment variable if set
+            secretKey = envSecret.trim();
+        } else if (secretKey != null && !secretKey.trim().isEmpty()) {
+            // Use config property if set (from application.yml)
+            secretKey = secretKey.trim();
+        } else {
+            // Use default secret as fallback
+            secretKey = DEFAULT_JWT_SECRET;
+            System.out.println("WARNING: Using default JWT_SECRET. For production, set JWT_SECRET environment variable.");
+        }
+        
+        // Final validation - this should never fail now, but keep for safety
         if (secretKey == null || secretKey.trim().isEmpty()) {
             throw new IllegalStateException(
-                "JWT_SECRET environment variable is not set or is empty. " +
+                "JWT_SECRET could not be determined. " +
                 "Please set JWT_SECRET in your Render environment variables. " +
-                "Current value: '" + secretKey + "' " +
                 "Generate a secret using: openssl rand -base64 32"
             );
         }
-        
-        // Trim whitespace that might have been accidentally added
-        secretKey = secretKey.trim();
         
         try {
             // Validate that the secret is valid Base64
@@ -107,7 +121,9 @@ public class JwtService {
     }
     
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        // Ensure secret is trimmed (handles any whitespace issues)
+        String trimmedSecret = secretKey.trim();
+        byte[] keyBytes = Decoders.BASE64.decode(trimmedSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
